@@ -9,7 +9,7 @@ namespace Assets.Source.Models.State
         {
   
             var amount = person.CurrentLocation.Inventory.HasAmountResource(Constants.ResourceIdWheatPlant);
-            Debug.Log($"Threshing wheat {amount}");
+            Debug.Log($"Threshing wheat");
 
             if (amount == 0)
             {

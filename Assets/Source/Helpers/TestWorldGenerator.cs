@@ -24,6 +24,8 @@ namespace Assets.Source.Helpers
             Farmer person4 = GenerateFarm(area, 130, -90, "John");
             ShopOwner person5 = GenerateShop(area, 0, -160, "Mark");
             Miller person6 = GenerateMill(area, 0, 160, "Mark");
+            Baker person7 = GenerateBakery(area, -40, 160, "Mark");
+            GenerateWell(area, 60, 175);
             world.AddPerson(person);
             world.AddPerson(person1);
             world.AddPerson(person2);
@@ -31,6 +33,7 @@ namespace Assets.Source.Helpers
             world.AddPerson(person4);
             world.AddPerson(person5);
             world.AddPerson(person6);
+            world.AddPerson(person7);
 
 
             //for(int i = 0; i < 10000; i++)
@@ -41,6 +44,12 @@ namespace Assets.Source.Helpers
             world.AddArea(area);
 
             return world;
+        }
+
+        private static void GenerateWell(Area area, int x, int y)
+        {
+            var well = new Well(Guid.NewGuid(), "Well", area, x, y, 20, 20);
+            area.AddLocation(well);
         }
 
         private static ShopOwner GenerateShop(Area area, int x, int y, string name)
@@ -56,6 +65,22 @@ namespace Assets.Source.Helpers
 
             return person;
         }
+
+
+        private static Baker GenerateBakery(Area area, int x, int y, string name)
+        {
+            var bakery = new Bakery(Guid.NewGuid(), "Bakery", area, x, y, 20, 20, true);
+            var person = new Baker(Guid.NewGuid(), name, bakery);
+
+            bakery.Owner = person;
+
+            person.AddOwnerShip(bakery);
+            person.Inventory.AddResource(new Coin(), 100);
+            area.AddLocation(bakery);
+
+            return person;
+        }
+
 
         private static Miller GenerateMill(Area area, int x, int y, string name)
         {
@@ -115,6 +140,8 @@ namespace Assets.Source.Helpers
             Sprite barnSprite = Resources.Load<Sprite>("Sprites/barn");
             Sprite shopSprite = Resources.Load<Sprite>("Sprites/shop");
             Sprite millSprite = Resources.Load<Sprite>("Sprites/mill");
+            Sprite wellSprite = Resources.Load<Sprite>("Sprites/well");
+            Sprite bakerySprite = Resources.Load<Sprite>("Sprites/bakery");
 
             foreach (var person in world.Persons)
             {
@@ -157,6 +184,16 @@ namespace Assets.Source.Helpers
                     {
                         renderer.sprite = millSprite;
                         gameObject.name = "mill";
+                    }
+                    else if (location is Bakery)
+                    {
+                        renderer.sprite = bakerySprite;
+                        gameObject.name = "bakery";
+                    }
+                    else if (location is Well)
+                    {
+                        renderer.sprite = wellSprite;
+                        gameObject.name = "well";
                     }
                     else
                     {

@@ -22,13 +22,20 @@ namespace Assets.Source.Models.State
             var amountOfCoin = person.Inventory.HasAmountResource(Constants.ResourceIdCoin);
             var canBuy = (int)Math.Floor(amountOfCoin/ resource.BuyCost);
 
-            var willBuy =  Math.Min(canBuy, 100);
+            var willBuy =  Math.Min(canBuy, amount);
+
+            if(willBuy == 0)
+            {
+                Debug.Log($"Can't buy {nameof(resource)}");
+                return new GoHomeState();
+            }
 
             var cost = (int)Math.Round(resource.BuyCost* willBuy);
 
             var resourcestack = person.CurrentLocation.Inventory.GetResource(guid, willBuy);
 
-            Debug.Log($"Buying: willbuy {willBuy}, cost {cost}, resourcestack {resourcestack.Amount}");
+            //Debug.Log($"Buying: willbuy {willBuy}, cost {cost}, resourcestack {resourcestack.Amount}");
+            Debug.Log($"Buying {nameof(resource)}");
             person.Inventory.AddResource(guid, resourcestack.Amount);
             person.Inventory.GetResource(Constants.ResourceIdCoin, cost);
             person.CurrentLocation.Owner.Inventory.AddResource(Constants.ResourceIdCoin, cost);

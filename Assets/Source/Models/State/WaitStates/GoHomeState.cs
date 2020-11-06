@@ -18,7 +18,7 @@ namespace Assets.Source.Models.State
             if (person.CurrentLocation != null && person.CurrentLocation.Id == home.Id)
             {
                 Debug.Log("Already home");
-                return new DoLongNothingState();
+                return new RestingState();
             }
             Debug.Log("Traveling home");
             person.TargetLocation = home;

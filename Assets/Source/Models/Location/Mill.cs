@@ -11,5 +11,6 @@ namespace Assets.Source.Models
         public Mill(Guid guid, string name, Area area, int x, int y, int width, int length, bool home) : base(guid, name, area, x, y, width, length, home)
         {
         }
+
     }
 }

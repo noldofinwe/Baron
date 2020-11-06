@@ -36,12 +36,12 @@ namespace Assets.Source.Models.State
                 }
                 else if(farmer.Inventory.HasAmountResource(Constants.ResourceIdCoin) > 0)
                 {
-                   return new GoBuyResourceState(Constants.ResourceIdWheatSeed);
+                   return new GoBuyResourceState(Constants.ResourceIdWheatSeed, 200);
                 }
             }
             else if (farmer.CurrentLocation.Id != _fieldNeedsSeeding.Id)
             {
-                Debug.Log($"Going to field {_fieldNeedsSeeding.Id}");
+                Debug.Log($"Going to field");
                 person.TargetLocation = _fieldNeedsSeeding;
                 return new TravelState();
 

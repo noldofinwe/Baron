@@ -18,7 +18,18 @@ namespace Assets.Source.Models.Resources
             {
                 return new Coin();
             }
-
+            if (id == Constants.ResourceIdFlour)
+            {
+                return new Flour();
+            }
+            if (id == Constants.ResourceIdBread)
+            {
+                return new Bread();
+            }
+            if (id == Constants.ResourceIdWater)
+            {
+                return new Water();
+            }
             return null;
         }
 

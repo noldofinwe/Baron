@@ -22,8 +22,6 @@ namespace Assets.Source.Models
         public Area _currentArea;
         protected List<Location> _owns;
         protected BaseState _currentState;
-        private int _tiredness;
-        private int _hunger;
 
         public PersonModel(Guid guid, string name, Location currentLocation)
         {
@@ -36,8 +34,8 @@ namespace Assets.Source.Models
             TargetLocation = null;
             _owns = new List<Location>();
             _currentState = new DoNothingState();
-            _tiredness = 0;
-            _hunger = 0;
+            Tiredness = 0;
+            Hunger = 0;
             Inventory = new InventoryStorage();
             X = currentLocation.X;
             Y = currentLocation.Y;
@@ -49,7 +47,14 @@ namespace Assets.Source.Models
 
         public virtual void Update()
         {
+
             _currentState = _currentState.Update(this);
+
+            if(_currentState != null)
+            {
+                Hunger = Hunger + _currentState.HungryStep;
+                Tiredness = Tiredness + _currentState.TiredStep;
+            }
         }
 
         public void AddOwnerShip(Location location)
@@ -64,7 +69,26 @@ namespace Assets.Source.Models
             {
                 amount += loc.Inventory.HasAmountResource(id);
             }
+            amount += Inventory.HasAmountResource(id);
             return amount;
+        }
+
+        //public int HasInTotalInventory(Guid id)
+        //{
+        //    var amount = 0;
+        //    foreach (var loc in Owns)
+        //    {
+        //        amount += loc.Inventory.HasAmountResource(id);
+        //    }
+        //    amount += Inventory.HasAmountResource(id);
+        //    return amount;
+        //}
+
+
+        public BaseState UpdateHomeState()
+        {
+            return new RestingState();
+            //throw new NotImplementedException();
         }
 
         public Location GetInventoryWithMostLocation(Guid id)
@@ -94,6 +118,9 @@ namespace Assets.Source.Models
         public InventoryStorage Inventory { get; set; }
         public Guid Id { get { return _guid; } }
 
+        public int Hunger { get; set; }
+        public int Tiredness { get; set; }
+
         public abstract FindWorkState GetFindWorkState();
 
         public Location GetHome() { return _owns.FirstOrDefault(p => p.IsHome); }
@@ -106,6 +133,21 @@ namespace Assets.Source.Models
                 storageLocation = GetHome();
             }
             return storageLocation;
+        }
+
+        public bool RemoveResource(Guid resourceId, int amount)
+        {
+            if(Inventory.HasAmountResource(resourceId) >= amount)
+            {
+                Inventory.RemoveResource(resourceId, amount);
+                return true;
+            }
+            if(CurrentLocation != null && Owns.Contains(CurrentLocation) && CurrentLocation.Inventory.HasAmountResource(resourceId) >= amount)
+            {
+                CurrentLocation.Inventory.RemoveResource(resourceId, amount);
+                return true;
+            }
+            return false;
         }
     }
 }

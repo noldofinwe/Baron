@@ -7,10 +7,12 @@ namespace Assets.Source.Models.State
     internal class GoBuyResourceState : BaseState
     {
         private Guid guid;
+        private int amount;
 
-        public GoBuyResourceState(Guid guid)
+        public GoBuyResourceState(Guid guid, int amount)
         {
             this.guid = guid;
+            this.amount = amount;
         }
 
         public override BaseState Update(PersonModel person)
@@ -18,7 +20,7 @@ namespace Assets.Source.Models.State
             Debug.Log("Go to the shop");
             if(person.CurrentLocation != null && person.CurrentLocation is Shop)
             {
-                return new BuyResourceState(guid, 0);
+                return new BuyResourceState(guid, amount);
             }
 
             var area = person.CurrentArea ?? person.CurrentLocation.Area;
@@ -26,7 +28,7 @@ namespace Assets.Source.Models.State
             if(shop == null)
             {
                 Debug.Log("No shop found");
-                return new DoLongNothingState();
+                return new GoHomeState();
             }
             person.TargetLocation = shop;
             return new TravelState();

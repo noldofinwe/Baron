@@ -1,6 +1,4 @@
-﻿using Assets.Source.Models.State;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Assets.Source.Models.State
@@ -24,12 +22,10 @@ namespace Assets.Source.Models.State
                 return new GoThreshingState();
             }
             
-            if(farmer.GetStorage().Inventory.HasAmountResource(Constants.ResourceIdWheatSeed)> 500 || farmer.Inventory.HasAmountResource(Constants.ResourceIdWheatSeed) > 150)
+            if(farmer.GetStorage().Inventory.HasAmountResource(Constants.ResourceIdWheatSeed)> 500 || farmer.Inventory.HasAmountResource(Constants.ResourceIdWheatSeed) > 250)
             {
                 return new GoBringWheatToMillState();
             }
-
-
 
             var fields = farmer.Owns.OfType<Field>().ToList();
             var fieldReadyForHarvest = fields.FirstOrDefault(p => p.IsReadyForHarvest());
@@ -48,8 +44,11 @@ namespace Assets.Source.Models.State
             }
             Debug.Log("No fields to seed, going home");
 
-
-            return new GoHomeState();
+            if (person.CurrentLocation != person.GetHome())
+            {
+                return new GoHomeState();
+            }
+            return person.UpdateHomeState();
         }
     }
 }

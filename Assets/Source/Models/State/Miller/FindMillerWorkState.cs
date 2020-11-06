@@ -4,10 +4,25 @@
     {
         public override BaseState Update(PersonModel person)
         {
-            if(person.GetStorage().Inventory.HasAmountResource(Constants.ResourceIdWheatSeed) == 0)
+            var mill = person.GetHome();
+
+            if (mill.CurrentState == null && person.GetStorage().Inventory.HasAmountResource(Constants.ResourceIdWheatSeed) > Constants.SeedsToFlour)
             {
-                return new DoLongNothingState();
+                return new GoMillSeedsState();
             }
+            if (person.Inventory.HasAmountResource(Constants.ResourceIdWheatSeed) > 100)
+            {
+                return new GoStoreResourceState(Constants.ResourceIdWheatSeed);
+            }
+            if(person.HasInTotalInventory(Constants.ResourceIdFlour) > 1)
+            {
+                return new GoSellFlourState();
+            }
+            if (person.CurrentLocation != mill)
+            {
+                return new GoHomeState();
+            }
+
             return this;
         }
     }

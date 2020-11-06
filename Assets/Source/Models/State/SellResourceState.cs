@@ -29,12 +29,19 @@ namespace Assets.Source.Models.State
 
             var willBuy = Math.Min(canBuy, amount);
 
+            if (willBuy == 0)
+            {
+                Debug.Log($"Can't sell {nameof(resource)}");
+                return new GoHomeState();
+            }
+
             var cost = (int)Math.Round(resource.SellCost * willBuy);
 
             var resourcestack = seller.Inventory.GetResource(guid, willBuy);
 
-            Debug.Log($"Buying: amount of coin {amountOfCoin} resourcecost {resource.SellCost} couldbuy {couldbuy} canbuy {canBuy} willbuy {willBuy}, cost {cost}, resourcestack {resourcestack.Amount}");
-            buyer.Inventory.AddResource(guid, resourcestack.Amount);
+           // Debug.Log($"Buying: amount of coin {amountOfCoin} resourcecost {resource.SellCost} couldbuy {couldbuy} canbuy {canBuy} willbuy {willBuy}, cost {cost}, resourcestack {resourcestack.Amount}");
+            Debug.Log($"Selling {nameof(resource)}");
+            seller.Inventory.AddResource(guid, resourcestack.Amount);
             buyer.Inventory.RemoveResource(Constants.ResourceIdCoin, cost);
             seller.Inventory.AddResource(Constants.ResourceIdCoin, cost);
             return new DoNothingState();

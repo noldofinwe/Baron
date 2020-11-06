@@ -49,6 +49,7 @@ namespace Assets.Source.Models
 
         public InventoryStorage Inventory { get; set; }
         public PersonModel Owner { get; internal set; }
+        public BaseLocationState CurrentState { get; set; }
 
         public void AddPerson(PersonModel person)
         {
@@ -58,7 +59,10 @@ namespace Assets.Source.Models
 
         public virtual void Update()
         {
-            //_persons.ForEach(p => p.Update());
+            if (CurrentState != null)
+            {
+                CurrentState = CurrentState.Update(this);
+            }
         }
     }
 }
